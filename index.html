@@ -10,7 +10,7 @@
 
 	<script>
 		
-		const constants = {k:1.0, l:1.6, m:0.5, n:0.2, g:0.1}
+		var constants = {k:1.0, l:1.6, m:0.5, n:0.2, g:0.1}
 		
 		var now = {dda:0.0, da:0.0, a:0.0, ddb:0.0, db:0.0, b:Math.PI/2.0};
 		
@@ -84,13 +84,58 @@
 			//ctx.fill();
 		}
 		
+		function reset() {
+			constants.k = parseFloat(document.getElementById("k-input").value);
+			constants.l = parseFloat(document.getElementById("l-input").value);
+			constants.m = parseFloat(document.getElementById("m-input").value);
+			constants.n = parseFloat(document.getElementById("n-input").value);
+			constants.g = parseFloat(document.getElementById("g-input").value);
+			
+			now.a = parseFloat(document.getElementById("a-input").value);
+			now.da = parseFloat(document.getElementById("da-input").value);
+			now.dda = parseFloat(document.getElementById("dda-input").value);
+			
+			now.b = parseFloat(document.getElementById("b-input").value);
+			now.db = parseFloat(document.getElementById("db-input").value);
+			now.ddb = parseFloat(document.getElementById("ddb-input").value);
+		}
+		
 	</script>
 
 <head>
 
 <body>
 
+{k:1.0, l:1.6, m:0.5, n:0.2, g:0.1}
+{dda:0.0, da:0.0, a:0.0, ddb:0.0, db:0.0, b:Math.PI/2.0}
 	<h1>Plain and simple: the double pendulum</h1>
+	
+	<h2>Constants</h2>
+	<table>
+	<tr><td><label>length 1: </label></td><td><input id="k-input" type="text" value="1.0" /> </td></tr>
+	<tr><td><label>length 2: </label></td><td><input id="l-input" type="text" value="1.6" /> </td></tr>
+	<tr><td><label>mass 1: </label></td><td><input id="m-input" type="text" value="0.5" /> </td></tr>
+	<tr><td><label>mass 2: </label></td><td><input id="n-input" type="text" value="0.1" /> </td></tr>
+	<tr><td><label>gravitational constant: </label></td><td><input id="g-input" value="0.1" /> </td></tr>
+	</table>
+	
+	<h2>Initial values</h2>
+	<table>
+	<tr>
+		<td><label>Alpha: </label></td><td><input id="a-input" type="text" value="0.0" /></td>
+		<td><label>d/dt(Alpha): </label></td><td><input id="da-input" type="text" value="0.0" /></td>
+		<td><label>d^2/dt^2(Alpha): </label></td><td><input id="dda-input" type="text" value="0.0" /></td>
+	</tr><tr>
+		<td><label>Beta: </label></td><td><input id="b-input" type="text" value="1.6" /></td>
+		<td><label>d/dt(Beta): </label></td><td><input id="db-input" type="text" value="0.0" /></td>
+		<td><label>d^2/dt^2(Beta): </label></td><td><input id="ddb-input" type="text" value="0.0" /></td>
+	</tr>
+	</table>
+	
+	<h2>Run Button</h2>
+	<input id="run-button" type="button" value="Run" onclick="reset();"/> <br/>
+	
+	<h2>Visualisation</h2>
 	<canvas id="myCanvas" width="480" height="480"></canvas>
 	
 </body>
