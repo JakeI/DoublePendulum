@@ -1,0 +1,98 @@
+<html>
+
+<head>
+
+	<title>Jakes double Pendulum</title>
+
+	<style>
+
+	</style>
+
+	<script>
+		
+		const constants = {k:1.0, l:1.6, m:0.5, n:0.2, g:0.1}
+		
+		var now = {dda:0.0, da:0.0, a:0.0, ddb:0.0, db:0.0, b:Math.PI/2.0};
+		
+		function ddAlpha(state){
+			return (constants.n*constants.l*state.da*state.db*Math.sin(state.a-state.b) +
+					(constants.m+constants.n)*constants.g*Math.cos(state.a) + 
+					constants.n*constants.l*(state.ddb*Math.cos(state.a-state.b)-state.db*Math.sin(state.a-state.b)*(state.da-state.db))
+				) / (-1.0*(constants.m+constants.n)*constants.k);
+		}
+		
+		function ddBeta(state){
+			return (constants.n*constants.k*state.da*state.db*Math.sin(state.a-state.b) -
+					constants.n*constants.g*Math.cos(state.b) -
+					constants.n*constants.k*(state.dda*Math.cos(state.a-state.b)-state.da*Math.sin(state.a-state.b)*(state.da-state.db))
+				) / (constants.n*constants.l);
+		}
+		
+		setInterval(function() {
+			var c = document.getElementById("myCanvas");
+			var ctx = c.getContext("2d");
+			var cw = c.width, ch = c.height;
+			
+			ctx.clearRect(0, 0, cw, ch);
+			
+			ctx.fillStyle = "#999999"
+			ctx.fillRect(0, 0, cw, ch);
+			
+			var next = {dda:0.0, da:0.0, a:0.0, ddb:0.0, db:0.0, b:0.0};
+			var numSteps = 1000, deltaTime = 30.0/100;
+			var dt = deltaTime/numSteps;
+			for(var t = 0.0; t < deltaTime; t += dt){
+				next.dda = ddAlpha(now);
+				next.ddb = ddBeta(now);
+				next.da = next.dda*dt + now.da;
+				next.db = next.ddb*dt + now.db;
+				next.a = next.da*dt + now.a;
+				next.b = next.db*dt + now.b;
+
+				now = next;
+			}
+			
+			draw(now, ctx, cw, ch);
+		}, 1000.0/30.0); // let's just assume that this really is constants
+		
+		function draw(state, ctx, cw, ch) {
+			var dim = cw > ch ? ch : cw;
+			var len = constants.k + constants.l;
+			var s = 0.45*dim/len; // TODO: use ctx.getTransform() instead
+			
+			var xcenter = Math.floor(cw/2), ycenter = Math.floor(ch/2); 
+			var xp1 = xcenter+s*constants.k*Math.cos(state.a), yp1 = ycenter-s*constants.k*Math.sin(state.a);
+			
+			ctx.lineWidth=10;
+			
+			ctx.strokeStyle = "#00FF00";
+			ctx.fillStyle = "#00FF00";
+			ctx.beginPath();
+			
+			ctx.moveTo(xp1, yp1);
+			ctx.lineTo(xp1+s*constants.l*Math.cos(state.b), yp1-s*constants.l*Math.sin(state.b));
+			ctx.stroke();
+			
+			ctx.strokeStyle = "#FF0000";
+			ctx.fillStyle = "#FF0000";
+			ctx.beginPath();
+			ctx.moveTo(xcenter, ycenter);
+			ctx.lineTo(xp1, yp1);
+			ctx.stroke();
+			
+			//ctx.arc(xp1, yp1, 0.2*s*constants.k, 0, 2* Math.PI, false);
+			//ctx.fill();
+		}
+		
+	</script>
+
+<head>
+
+<body>
+
+	<h1>Plain and simple: the double pendulum</h1>
+	<canvas id="myCanvas" width="480" height="480"></canvas>
+	
+</body>
+
+</html>
